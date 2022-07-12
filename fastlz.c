@@ -48,7 +48,7 @@
 /*
  * Specialize custom 64-bit implementation for speed improvements.
  */
-#if defined(__x86_64__) || defined(_M_X64)
+#if defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__) || defined(_M_ARM64)
 #define FLZ_ARCH64
 #endif
 
@@ -119,6 +119,10 @@ static uint32_t flz_cmp(const uint8_t* p, const uint8_t* q, const uint8_t* r) {
   if (flz_readu32(p) == flz_readu32(q)) {
     p += 4;
     q += 4;
+  }
+  if (q > r) {
+    p = p - (q - r);
+    q = r;
   }
   while (q < r)
     if (*p++ != *q++) break;
